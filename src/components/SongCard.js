@@ -61,7 +61,7 @@ export default class SongCard extends React.Component {
     render() {
         const { song } = this.props;
         let num = this.getItemNum();
-        console.log("num: " + num);
+        //console.log("num: " + num);
         let itemClass = "playlister-song unselected-list-card";
         if (this.state.draggedTo) {
             itemClass = "playlister-song-dragged-to";
@@ -80,10 +80,10 @@ export default class SongCard extends React.Component {
             >
                 <span>
                     {num}.
-                    <a href={youtubeURL} class="song-span">{song.title} by {song.artist}</a>
+                    <a href={youtubeURL} class="song-span" id={'song-' + num}>{song.title} by {song.artist}</a>
                 </span>
                 <div>
-                    <input type="button" value="✕"></input>
+                    <input type="button" value="✕" id={'song-' + num}></input>
                 </div>
             </div>
         )
