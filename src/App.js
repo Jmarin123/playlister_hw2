@@ -142,6 +142,11 @@ class App extends React.Component {
             this.setStateWithUpdatedList(getSongs);
         }
     }
+    deleteSong = (song) => {
+        let getCurrentList = this.state.currentList;
+        getCurrentList.songs = getCurrentList.songs.filter((getSong) => song !== getSong);
+        this.setStateWithUpdatedList(getCurrentList);
+    }
     editMarkedSong = () => {
         this.editSong(this.state.markedSong, this.state.currentSong);
         this.hideEditSongModal();
@@ -149,6 +154,10 @@ class App extends React.Component {
     deleteMarkedList = () => {
         this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
         this.hideDeleteListModal();
+    }
+    deleteMarkedSong = () => {
+        this.deleteSong(this.state.markedSong);
+        this.hideDeleteSongModal();
     }
     // THIS FUNCTION SPECIFICALLY DELETES THE CURRENT LIST
     deleteCurrentList = () => {
