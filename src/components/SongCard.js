@@ -3,10 +3,9 @@ import React from "react";
 export default class SongCard extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props)
         this.state = {
             isDragging: false,
-            draggedTo: false
+            draggedTo: false,
         }
     }
     handleDragStart = (event) => {
@@ -54,6 +53,11 @@ export default class SongCard extends React.Component {
         this.props.moveCallback(sourceId, targetId);
     }
 
+    handleDbClick = (event) => {
+        event.preventDefault();
+        this.props.editSongCallback(this.props.song, this.getItemNum());
+    }
+
     getItemNum = () => {
         return this.props.id.substring("playlist-song-".length);
     }
@@ -77,10 +81,11 @@ export default class SongCard extends React.Component {
                 onDragLeave={this.handleDragLeave}
                 onDrop={this.handleDrop}
                 draggable="true"
+                onDoubleClick={this.handleDbClick}
             >
-                <span>
+                <span id={'song-' + num}>
                     {num}.
-                    <a href={youtubeURL} class="song-span" id={'song-' + num}>{song.title} by {song.artist}</a>
+                    <a href={youtubeURL} className="song-span" id={'song-' + num}>{song.title} by {song.artist}</a>
                 </span>
                 <div>
                     <input type="button" value="✕" id={'song-' + num}></input>
