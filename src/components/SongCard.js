@@ -52,7 +52,10 @@ export default class SongCard extends React.Component {
         // ASK THE MODEL TO MOVE THE DATA
         this.props.moveCallback(sourceId, targetId);
     }
-
+    handleClick = (event) => {
+        event.preventDefault();
+        this.props.deleteSongCallback(this.props.song, this.getItemNum());
+    }
     handleDbClick = (event) => {
         event.preventDefault();
         this.props.editSongCallback(this.props.song, this.getItemNum());
@@ -88,7 +91,7 @@ export default class SongCard extends React.Component {
                     <a href={youtubeURL} className="song-span" id={'song-' + num}>{song.title} by {song.artist}</a>
                 </span>
                 <div>
-                    <input type="button" value="✕" id={'song-' + num}></input>
+                    <input type="button" value="✕" id={'song-' + num} onClick={this.handleClick} />
                 </div>
             </div>
         )

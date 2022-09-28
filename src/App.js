@@ -10,6 +10,7 @@ import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
 import EditSongModal from './components/EditSongModal';
+import DeleteSongModal from './components/DeleteSongModal';
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
 import EditToolbar from './components/EditToolbar.js';
@@ -36,7 +37,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion: null,
             currentList: null,
             sessionData: loadedSessionData,
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }
     }
@@ -79,7 +80,7 @@ class App extends React.Component {
                 counter: prevState.sessionData.counter + 1,
                 keyNamePairs: updatedPairs
             },
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }), () => {
             // PUTTING THIS NEW LIST IN PERMANENT STORAGE
@@ -118,7 +119,7 @@ class App extends React.Component {
                 counter: prevState.sessionData.counter - 1,
                 keyNamePairs: newKeyNamePairs
             },
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }), () => {
             // DELETING THE LIST FROM PERMANENT STORAGE
@@ -142,7 +143,7 @@ class App extends React.Component {
         }
     }
     editMarkedSong = () => {
-        this.editSong(this.state.markedSongForEdit, this.state.currentSong);
+        this.editSong(this.state.markedSong, this.state.currentSong);
         this.hideEditSongModal();
     }
     deleteMarkedList = () => {
@@ -179,7 +180,7 @@ class App extends React.Component {
                 counter: prevState.sessionData.counter,
                 keyNamePairs: newKeyNamePairs
             },
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
@@ -197,7 +198,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
             currentList: newCurrentList,
             sessionData: this.state.sessionData,
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
@@ -211,7 +212,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
             currentList: null,
             sessionData: this.state.sessionData,
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
@@ -224,7 +225,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
             currentList: list,
             sessionData: this.state.sessionData,
-            markedSongForEdit: null,
+            markedSong: null,
             currentSong: null
         }), () => {
             // UPDATING THE LIST IN PERMANENT STORAGE
@@ -288,7 +289,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion: keyPair,
             sessionData: prevState.sessionData,
             currentSong: null,
-            markedSongForEdit: null
+            markedSong: null
         }), () => {
             // PROMPT THE USER
             this.showDeleteListModal();
@@ -303,10 +304,23 @@ class App extends React.Component {
             currentList: prevState.currentList,
             listKeyPairMarkedForDeletion: null,
             sessionData: prevState.sessionData,
-            markedSongForEdit: song,
+            markedSong: song,
             currentSong: index
         }), () => {
             this.showEditSongModal();
+        });
+    }
+
+    markListForDeletion = (song, index) => {
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            listKeyPairMarkedForDeletion: null,
+            sessionData: prevState.sessionData,
+            currentSong: index,
+            markedSong: song
+        }), () => {
+            // PROMPT THE USER
+            this.showDeleteSongModal();
         });
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
@@ -319,7 +333,6 @@ class App extends React.Component {
     hideDeleteListModal() {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
-
     }
     //If they reall wanna delete the modal
     showEditSongModal() {
@@ -332,6 +345,17 @@ class App extends React.Component {
         let modal = document.getElementById("edit-song-modal");
         modal.classList.remove("is-visible");
     }
+    //If they really wanna delete the song
+    showDeleteSongModal() {
+        let modal = document.getElementById("delete-song-modal");
+        modal.classList.add("is-visible");
+    }
+    //Hide the delete song
+    hideDeleteSongModal() {
+        let modal = document.getElementById("delete-song-modal");
+        modal.classList.remove("is-visible");
+    }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
@@ -362,7 +386,8 @@ class App extends React.Component {
                 <PlaylistCards
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction}
-                    editSongCallback={this.markSongForEdit} />
+                    editSongCallback={this.markSongForEdit}
+                    deleteSongCallback={this.markListForDeletion} />
                 <Statusbar
                     currentList={this.state.currentList} />
                 <DeleteListModal
@@ -370,8 +395,13 @@ class App extends React.Component {
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallback={this.deleteMarkedList}
                 />
+                <DeleteSongModal
+                    listKeyPair={this.state.markedSong}
+                    hideDeleteSongModalCallback={this.hideDeleteSongModal}
+                    deleteSongCallback={this.deleteMarkedSong}
+                />
                 <EditSongModal
-                    listKeyPair={this.state.markedSongForEdit}
+                    listKeyPair={this.state.markedSong}
                     hideEditSongModalCallback={this.hideEditSongModal}
                     editSongCallback={this.editMarkedSong}
                 />
