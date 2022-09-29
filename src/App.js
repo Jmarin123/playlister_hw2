@@ -243,7 +243,7 @@ class App extends React.Component {
 
         });
     }
-    setStateWithUpdatedList(list) {
+    setStateWithUpdatedList = (list) => {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
             currentList: list,
@@ -261,7 +261,7 @@ class App extends React.Component {
     }
     // THIS FUNCTION MOVES A SONG IN THE CURRENT LIST FROM
     // start TO end AND ADJUSTS ALL OTHER ITEMS ACCORDINGLY
-    moveSong(start, end) {
+    moveSong = (start, end) => {
         let list = this.state.currentList;
 
         // WE NEED TO UPDATE THE STATE FOR THE APP
@@ -360,16 +360,26 @@ class App extends React.Component {
             this.showDeleteSongModal();
         });
     }
+    // disabledAllTools() {
+    //     let getAllToolBars = document.getElementsByClassName('toolbar-button');
+    // }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
+    showDeleteListModal = () => {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
+    hideDeleteListModal = () => {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            listKeyPairMarkedForDeletion: null,
+            sessionData: prevState.sessionData,
+            currentSong: null,
+            markedSong: null
+        }));
     }
     //If they reall wanna delete the modal
     showEditSongModal() {
@@ -377,10 +387,17 @@ class App extends React.Component {
         modal.classList.add("is-visible");
     }
     //Hiding the modal
-    hideEditSongModal() {
+    hideEditSongModal = () => {
         // PROMPT THE USER
         let modal = document.getElementById("edit-song-modal");
         modal.classList.remove("is-visible");
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            listKeyPairMarkedForDeletion: null,
+            sessionData: prevState.sessionData,
+            currentSong: null,
+            markedSong: null
+        }));
     }
     //If they really wanna delete the song
     showDeleteSongModal() {
@@ -388,9 +405,16 @@ class App extends React.Component {
         modal.classList.add("is-visible");
     }
     //Hide the delete song
-    hideDeleteSongModal() {
+    hideDeleteSongModal = () => {
         let modal = document.getElementById("delete-song-modal");
         modal.classList.remove("is-visible");
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            listKeyPairMarkedForDeletion: null,
+            sessionData: prevState.sessionData,
+            currentSong: null,
+            markedSong: null
+        }));
     }
     handleKeyPress = (e) => {
         if (e.ctrlKey && e.code === 'KeyZ' && this.tps.hasTransactionToUndo()) {
@@ -406,11 +430,17 @@ class App extends React.Component {
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
+        let hasCurrentList = this.state.currentList !== null;
+        let currentlyIn = this.state.markedSong !== null;
+        let currentlyInList = this.state.listKeyPairMarkedForDeletion !== null
         return (
             <div id="root" onKeyDown={this.handleKeyPress} tabIndex="0">
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    canAddList={hasCurrentList}
+                    currentInModal={currentlyInList}
+                    currentIn={currentlyIn}
                 />
                 <SidebarList
                     currentList={this.state.currentList}
@@ -428,6 +458,8 @@ class App extends React.Component {
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
                     addSongCallback={this.addSongTransaction}
+                    currentInModal={currentlyInList}
+                    currentIn={currentlyIn}
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
