@@ -21,6 +21,6 @@ export default class AddSong_Transaction extends jsTPS_Transaction {
 
     undoTransaction() {
         let currentList = this.app.state.currentList;
-        this.app.deleteSong(currentList.songs[currentList.songs.length - 1]);
+        this.app.deleteSong(currentList.songs.length - 1);
     }
 }

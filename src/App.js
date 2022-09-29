@@ -393,10 +393,11 @@ class App extends React.Component {
         modal.classList.remove("is-visible");
     }
     handleKeyPress = (e) => {
-        if (e.ctrlKey && e.code === 'KeyZ') {
-            console.log("Hey i made cntrl z!");
-        } else if (e.ctrlKey && e.code === 'KeyY') {
-            console.log("Hey I made it for cntrl y!");
+        if (e.ctrlKey && e.code === 'KeyZ' && this.tps.hasTransactionToUndo()) {
+            //This will deal with undo!
+            this.undo();
+        } else if (e.ctrlKey && e.code === 'KeyY' && this.tps.hasTransactionToRedo()) {
+            this.redo();
         }
     }
 
