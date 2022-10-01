@@ -162,6 +162,7 @@ class App extends React.Component {
         this.hideEditSongModal();
     }
     deleteMarkedList = () => {
+        this.tps.clearAllTransactions();
         this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
         this.hideDeleteListModal();
     }
@@ -417,8 +418,8 @@ class App extends React.Component {
         }));
     }
     handleKeyPress = (e) => {
+
         if (e.ctrlKey && e.code === 'KeyZ' && this.tps.hasTransactionToUndo()) {
-            //This will deal with undo!
             this.undo();
         } else if (e.ctrlKey && e.code === 'KeyY' && this.tps.hasTransactionToRedo()) {
             this.redo();
